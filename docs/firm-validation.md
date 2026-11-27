@@ -1,8 +1,10 @@
 # FIRM container validation
 
 Xavrx now has a read-only host-side inspector at `tools/firm-inspect.py`.
-It checks the FIRM magic, minimum header length, section count, section data
-bounds, and overlapping section ranges. Unit tests use synthetic byte arrays.
+It checks the FIRM magic, minimum header length, four section descriptors,
+section data bounds, and overlapping section ranges. Its JSON report includes
+the whole-file SHA-256 and each present section's stored SHA-256 field. These
+hashes are reported, not recomputed or verified. Unit tests use synthetic data.
 
 Run on a computer or Termux with Python 3:
 
@@ -22,10 +24,13 @@ payloads, access NAND, or interact with the console.
 
 ## Descriptor field naming correction
 
-The 32-bit value at descriptor offset `+0x0C` is the FIRM section
-**copy method**, not a processor or section type. The inspector reports it as
-`copy_method` and deliberately does not interpret or enforce its value.
-The descriptor's SHA-256 field begins at offset `+0x10`; this basic inspector
-does not verify section hashes. See the [3dbrew FIRM format reference](https://3dbrew.org/wiki/FIRM).
+The 32-bit value at descriptor offset `+0x0C` is described by 3dbrew as the
+FIRM section **copy method** (0 = NDMA, 1 = XDMA, 2 = CPU copy). The inspector
+reports it as `copy_method` and deliberately does not interpret or enforce its
+value. Luma3DS's `FirmSection` struct names the same field `procType`, but its
+current FIRM validation path does not use that member. Xavrx documents this
+naming difference rather than treating the field as a bootability check.
+The descriptor's stored SHA-256 field begins at offset `+0x10`; this basic
+inspector reports it but does not verify section hashes. See the [3dbrew FIRM format reference](https://3dbrew.org/wiki/FIRM).
 
 This correction improves report accuracy; it does not add bootability checks.
