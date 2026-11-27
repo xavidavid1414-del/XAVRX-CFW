@@ -82,3 +82,19 @@ Workflow run 46062015166 completed successfully: core-tests and
 build-3ds-homebrew both passed. This verifies the portable tests and the
 existing 3DS homebrew/package build only. It does not build, validate, or test a
 bootable Xavrx boot.firm.
+
+## Boot contract research checkpoint
+
+A source-backed evidence note is now tracked at
+[`docs/boot-contract-evidence.md`](boot-contract-evidence.md). It records
+what upstream references establish and, just as importantly, what remains
+unverified: the exact ARM9 entry register/stack/CPU state, the target's
+boot9strap version, and model-specific memory ownership. The next step is to
+match the target's actual boot9strap version to its tagged source before
+specifying an entry ABI. No ARM9 payload or `boot.firm` was produced by this
+research checkpoint.
+
+Research references:
+- https://github.com/SciresM/boot9strap
+- https://github.com/LumaTeam/Luma3DS/blob/master/arm9/source/firm.c
+- https://github.com/radareorg/radare2/blob/master/libr/bin/p/bin_nin3ds.c
