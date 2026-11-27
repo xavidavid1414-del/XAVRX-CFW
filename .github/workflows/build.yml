@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           test -x "$DEVKITARM/bin/arm-none-eabi-gcc"
-          test -f "$DEVKITPRO/3ds_rules"
+          test -f "$DEVKITARM/3ds_rules"
           "$DEVKITARM/bin/arm-none-eabi-gcc" --version
       - name: Build diagnostic application
         shell: bash
