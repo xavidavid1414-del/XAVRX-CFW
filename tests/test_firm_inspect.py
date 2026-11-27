@@ -56,6 +56,17 @@ class FirmInspectTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "load address range overflows"):
             firm_inspect.inspect_firm(bytes(data))
 
+    def test_reports_overlapping_load_ranges_without_claiming_validity(self):
+        data = bytearray(make_firm())
+        struct.pack_into("<III", data, 0x70, 0x210, 0x1FF80020, 0x20)
+        data[0x80:0xA0] = hashlib.sha256(data[0x210:0x230]).digest()
+        result = firm_inspect.inspect_firm(bytes(data))
+        self.assertEqual(result["load_range_overlaps"], [{
+            "section_a": 0, "section_b": 1,
+            "overlap_start": "0x1FF80020",
+            "overlap_end_exclusive": "0x1FF80040"
+        }])
+
     def test_rejects_wrong_magic(self):
         with self.assertRaisesRegex(ValueError, "magic"):
             firm_inspect.inspect_firm(b"NOPE" + bytes(0x300))
