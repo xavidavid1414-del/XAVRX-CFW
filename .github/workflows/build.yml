@@ -8,12 +8,21 @@ on:
   workflow_dispatch:
 
 jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Compile and run portable core tests
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -Iinclude source/core.c tests/test_core.c -o /tmp/xavrx-core-tests
+          /tmp/xavrx-core-tests
+
   build-3ds-homebrew:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install devkitPro and 3DS toolchain
         shell: bash
         run: |
@@ -21,20 +30,17 @@ jobs:
           sudo dpkg -i /tmp/devkitpro-pacman.deb
           sudo dkp-pacman -Sy --noconfirm
           sudo dkp-pacman -S --noconfirm 3ds-dev
-
       - name: Build diagnostic application
         shell: bash
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM="$DEVKITPRO/devkitARM"
           make
-
       - name: Report artifact size
         shell: bash
         run: |
           test -s xavrx-diagnostic.3dsx
           stat -c '%n %s bytes' xavrx-diagnostic.3dsx
-
       - name: Upload development artifact
         uses: actions/upload-artifact@v4
         with:
