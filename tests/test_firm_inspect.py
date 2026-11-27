@@ -23,6 +23,8 @@ class FirmInspectTests(unittest.TestCase):
         result = firm_inspect.inspect_firm(make_firm())
         self.assertEqual(result["format"], "FIRM")
         self.assertTrue(result["sections"][0]["present"])
+        self.assertEqual(result["sections"][0]["copy_method"], 0)
+        self.assertNotIn("type", result["sections"][0])
 
     def test_rejects_wrong_magic(self):
         with self.assertRaisesRegex(ValueError, "magic"):
