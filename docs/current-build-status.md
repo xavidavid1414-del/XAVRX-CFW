@@ -1,12 +1,12 @@
 # Xavrx current build status
 
-Latest verified workflow: [run 46064155966](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46064155966)
+Latest verified workflow: [run 46064393281](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46064393281)
 
-Commit: `0419528707d39939d70eeb3b43d67ad87de84a8f`
+Commit: `4165d4933a5235a08faf473c1196dd7b03d6f2c5`
 
 ## Verified jobs
 
-Run 46064155966 completed successfully:
+Run 46064393281 completed successfully:
 
 - `core-tests`: portable core tests and read-only FIRM inspector tests passed.
 - `build-3ds-homebrew`: diagnostic `.3dsx`, Xavrx Installer `.3dsx`, and SD-layout ZIP packaging completed successfully.
@@ -19,7 +19,7 @@ The current portable code, homebrew applications, and SD folder-layout archive b
 
 ## Artifacts
 
-Open [the latest workflow run](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46064155966) and download:
+Open [the latest workflow run](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46064393281) and download:
 - `xavrx-diagnostic-3dsx`
 - `xavrx-installer-3dsx`
 - `xavrx-sd-layout`
