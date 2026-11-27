@@ -35,7 +35,7 @@ def inspect_firm(data: bytes) -> dict:
             sections.append({
                 "index": index, "present": False, "file_offset": file_offset,
                 "load_address": load_address, "size": size, "copy_method": copy_method,
-                "section_sha256": None
+                "section_sha256": None, "section_sha256_valid": None
             })
             continue
         end = file_offset + size
@@ -47,10 +47,13 @@ def inspect_firm(data: bytes) -> dict:
             if file_offset < other_end and other_start < end:
                 raise ValueError(f"sections {other_index} and {index} overlap")
         ranges.append((file_offset, end, index))
+        stored_hash = data[off + 0x10:off + 0x30]
+        calculated_hash = hashlib.sha256(data[file_offset:end]).digest()
         sections.append({
             "index": index, "present": True, "file_offset": file_offset,
             "load_address": load_address, "size": size, "copy_method": copy_method,
-            "section_sha256": data[off + 0x10:off + 0x30].hex()
+            "section_sha256": stored_hash.hex(),
+            "section_sha256_valid": stored_hash == calculated_hash
         })
 
     if not any(section["present"] for section in sections):
