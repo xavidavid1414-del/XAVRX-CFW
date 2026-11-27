@@ -16,6 +16,7 @@ def make_firm():
     struct.pack_into("<II", data, 0x08, 0x1FF80000, 0x08000000)
     struct.pack_into("<III", data, 0x40, 0x200, 0x1FF80000, 0x40)
     struct.pack_into("<I", data, 0x4C, 0)
+    data[0x50:0x70] = hashlib.sha256(data[0x200:0x240]).digest()
     return bytes(data)
 
 
@@ -27,7 +28,8 @@ class FirmInspectTests(unittest.TestCase):
         self.assertEqual(result["sections"][0]["copy_method"], 0)
         self.assertNotIn("type", result["sections"][0])
         self.assertEqual(result["file_sha256"], hashlib.sha256(make_firm()).hexdigest())
-        self.assertEqual(result["sections"][0]["section_sha256"], bytes(32).hex())
+        self.assertEqual(result["sections"][0]["section_sha256"], hashlib.sha256(make_firm()[0x200:0x240]).hexdigest())
+        self.assertTrue(result["sections"][0]["section_sha256_valid"])
 
     def test_reports_copy_method_and_section_hash(self):
         data = bytearray(make_firm())
@@ -36,6 +38,13 @@ class FirmInspectTests(unittest.TestCase):
         result = firm_inspect.inspect_firm(bytes(data))
         self.assertEqual(result["sections"][0]["copy_method"], 2)
         self.assertEqual(result["sections"][0]["section_sha256"], bytes(range(32)).hex())
+        self.assertFalse(result["sections"][0]["section_sha256_valid"])
+
+    def test_detects_section_hash_mismatch(self):
+        data = bytearray(make_firm())
+        data[0x220] ^= 0xFF
+        result = firm_inspect.inspect_firm(bytes(data))
+        self.assertFalse(result["sections"][0]["section_sha256_valid"])
 
     def test_rejects_wrong_magic(self):
         with self.assertRaisesRegex(ValueError, "magic"):
