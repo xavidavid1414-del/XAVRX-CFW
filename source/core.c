@@ -55,3 +55,27 @@ int xavrx_memory_ranges_overlap(XavrxMemoryRange a, XavrxMemoryRange b)
 
     return a.start < b_end && b.start < a_end;
 }
+
+int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count)
+{
+    uint32_t i;
+    uint32_t j;
+
+    if (regions == 0 || count == 0 || count > XAVRX_MEMORY_MAP_MAX_REGIONS) {
+        return 0;
+    }
+
+    for (i = 0; i < count; ++i) {
+        if (!xavrx_memory_range_valid(regions[i])) {
+            return 0;
+        }
+
+        for (j = 0; j < i; ++j) {
+            if (xavrx_memory_ranges_overlap(regions[i], regions[j])) {
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
