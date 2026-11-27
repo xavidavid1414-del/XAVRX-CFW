@@ -2,7 +2,7 @@
 
 Xavrx now has a read-only host-side inspector at `tools/firm-inspect.py`.
 It checks the FIRM magic, minimum header length, four section descriptors,
-section data bounds, and overlapping section ranges. Its JSON report includes
+section data bounds, overlapping file ranges, and 32-bit load-address arithmetic overflow. Its JSON report includes
 the whole-file SHA-256, each present section's stored SHA-256 field, and a
 `section_sha256_valid` boolean comparing the stored digest with a freshly
 calculated SHA-256 of that section's bytes. A mismatch is reported rather than
@@ -36,3 +36,12 @@ The descriptor's stored SHA-256 field begins at offset `+0x10`; the inspector
 now verifies that digest against the corresponding section data. See the [3dbrew FIRM format reference](https://3dbrew.org/wiki/FIRM).
 
 This correction improves report accuracy; it does not add bootability checks.
+
+
+## Load-address arithmetic
+
+For each non-empty section, the inspector checks that the 32-bit load address
+plus the section size does not wrap beyond the 32-bit address space. It reports
+the exclusive end of the range for review. This is only arithmetic validation:
+it does not approve any physical memory region, determine hardware ownership,
+or establish that the section is safe to load.
