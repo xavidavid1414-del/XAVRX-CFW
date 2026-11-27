@@ -27,6 +27,8 @@ def inspect_firm(data: bytes) -> dict:
     arm11_entry, arm9_entry = struct.unpack_from("<II", data, 0x08)
     sections = []
     ranges = []
+    load_ranges = []
+    load_range_overlaps = []
     for index in range(SECTION_COUNT):
         off = SECTION_TABLE_OFFSET + index * SECTION_ENTRY_SIZE
         file_offset, load_address, size = struct.unpack_from("<III", data, off)
@@ -50,6 +52,14 @@ def inspect_firm(data: bytes) -> dict:
             if file_offset < other_end and other_start < end:
                 raise ValueError(f"sections {other_index} and {index} overlap")
         ranges.append((file_offset, end, index))
+        for other_start, other_end, other_index in load_ranges:
+            if load_address < other_end and other_start < load_end:
+                load_range_overlaps.append({
+                    "section_a": other_index, "section_b": index,
+                    "overlap_start": f"0x{max(load_address, other_start):08X}",
+                    "overlap_end_exclusive": f"0x{min(load_end, other_end):08X}"
+                })
+        load_ranges.append((load_address, load_end, index))
         stored_hash = data[off + 0x10:off + 0x30]
         calculated_hash = hashlib.sha256(data[file_offset:end]).digest()
         sections.append({
@@ -70,6 +80,7 @@ def inspect_firm(data: bytes) -> dict:
         "arm11_entry": f"0x{arm11_entry:08X}",
         "arm9_entry": f"0x{arm9_entry:08X}",
         "sections": sections,
+        "load_range_overlaps": load_range_overlaps,
         "validation": "basic container bounds only; not proof of bootability"
     }
 
