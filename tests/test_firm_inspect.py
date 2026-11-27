@@ -30,6 +30,14 @@ class FirmInspectTests(unittest.TestCase):
         self.assertEqual(result["file_sha256"], hashlib.sha256(make_firm()).hexdigest())
         self.assertEqual(result["sections"][0]["section_sha256"], hashlib.sha256(make_firm()[0x200:0x240]).hexdigest())
         self.assertTrue(result["sections"][0]["section_sha256_valid"])
+        self.assertEqual(result["entry_point_section_matches"]["arm11"], [0])
+        self.assertEqual(result["entry_point_section_matches"]["arm9"], [])
+
+    def test_entry_point_at_exclusive_end_does_not_match(self):
+        data = bytearray(make_firm())
+        struct.pack_into("<I", data, 0x08, 0x1FF80040)
+        result = firm_inspect.inspect_firm(bytes(data))
+        self.assertEqual(result["entry_point_section_matches"]["arm11"], [])
 
     def test_reports_copy_method_and_section_hash(self):
         data = bytearray(make_firm())
