@@ -78,12 +78,11 @@ as separate artifacts.
 
 ## Latest verified CI checkpoint
 
-Workflow run 46062960686 completed successfully on commit
-`f5ab6a372a79a758123c3de69826fbf3a1e962ee`: core-tests and
-build-3ds-homebrew both passed. The run built the diagnostic and installer
-`.3dsx` applications and produced the SD-layout ZIP. This verifies the
-portable tests and existing homebrew/package build only; it does not build,
-validate, or test a bootable Xavrx `boot.firm`.
+Workflow runs 46063440855, 46063444075, and 46063447754 completed
+successfully. Both `core-tests` and `build-3ds-homebrew` passed in all three
+runs. The verified checks include the FIRM inspector tests, diagnostic and
+installer `.3dsx` builds, and SD-layout ZIP packaging. These runs do not
+build, validate, or test a bootable Xavrx `boot.firm`.
 
 See [docs/current-build-status.md](current-build-status.md) for the exact
 artifacts and limitations.
