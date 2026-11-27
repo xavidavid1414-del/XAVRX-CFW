@@ -9,7 +9,7 @@ hardware memory map, or bootable FIRM image.
 |---|---|---|
 | File lookup | [boot9strap README](https://github.com/SciresM/boot9strap#readme) says it launches `boot.firm` from SD or CTRNAND. | The active payload filename and fallback locations are known. |
 | FIRM section validation | [Luma3DS ARM9 FIRM loader](https://github.com/LumaTeam/Luma3DS/blob/master/arm9/source/firm.c) checks the `FIRM` magic, ARM9 entry, section count/size bounds, alignment, address overflow, and allowed destination ranges. | A basic header parser is not enough; validation must include section semantics and target-specific constraints. |
-| FIRM structure | [radare2 Nintendo 3DS FIRM parser](https://github.com/radareorg/radare2/blob/master/libr/bin/p/bin_nin3ds.c) recognizes four section descriptors and ARM9/ARM11 section types. | Four descriptors and processor type metadata are useful format facts, but this parser is not a bootloader specification. |
+| FIRM descriptor metadata | [3dbrew FIRM format](https://3dbrew.org/wiki/FIRM) describes descriptor offset `+0x0C` as a copy method; Luma3DS's `FirmSection` struct calls the same field `procType`, though its loader validation does not consume it. | Xavrx reports this field without enforcing its value; the naming discrepancy is documented rather than guessed away. |
 | Boot-chain versioning | [boot9strap releases](https://github.com/SciresM/boot9strap/releases) document behavior changes across versions. | Any compatibility claim must name the boot9strap version being targeted. |
 
 ## Not yet established
