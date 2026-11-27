@@ -76,6 +76,26 @@ class FirmInspectTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "too small"):
             firm_inspect.inspect_firm(b"FIRM")
 
+    def test_accepts_section_ending_exactly_at_eof(self):
+        result = firm_inspect.inspect_firm(make_firm())
+        section = result["sections"][0]
+        self.assertEqual(section["file_offset"] + section["size"], result["file_size"])
+        self.assertTrue(section["section_sha256_valid"])
+
+    def test_rejects_section_data_inside_header(self):
+        data = bytearray(make_firm())
+        struct.pack_into("<I", data, 0x40, 0x1F0)
+        with self.assertRaisesRegex(ValueError, "overlaps FIRM header"):
+            firm_inspect.inspect_firm(bytes(data))
+
+    def test_rejects_firm_with_no_sections(self):
+        data = bytearray(make_firm())
+        for index in range(firm_inspect.SECTION_COUNT):
+            off = firm_inspect.SECTION_TABLE_OFFSET + index * firm_inspect.SECTION_ENTRY_SIZE
+            struct.pack_into("<III", data, off, 0, 0, 0)
+        with self.assertRaisesRegex(ValueError, "no non-empty sections"):
+            firm_inspect.inspect_firm(bytes(data))
+
     def test_rejects_section_outside_file(self):
         data = bytearray(make_firm())
         struct.pack_into("<I", data, 0x40, 0x230)
