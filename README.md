@@ -38,3 +38,8 @@ XAVRX is intended to become an independent CFW environment rather than a theme o
 The current 3DS target is `xavrx-diagnostic.3dsx`. No CIA or installable CFW package is produced.
 
 See [docs/build.md](docs/build.md) for build details and [docs/architecture.md](docs/architecture.md) for the development model.
+
+
+## Customization roadmap
+
+XAVRX is planned to support animated startup splashes with optional synchronized sound, static splash fallback, custom interface themes, and optional theme music and sound effects. These are requirements, not implemented features yet. See [docs/customization.md](docs/customization.md) for the proposed design and compatibility stages.
