@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import struct
 import unittest
@@ -25,6 +26,16 @@ class FirmInspectTests(unittest.TestCase):
         self.assertTrue(result["sections"][0]["present"])
         self.assertEqual(result["sections"][0]["copy_method"], 0)
         self.assertNotIn("type", result["sections"][0])
+        self.assertEqual(result["file_sha256"], hashlib.sha256(make_firm()).hexdigest())
+        self.assertEqual(result["sections"][0]["section_sha256"], bytes(32).hex())
+
+    def test_reports_copy_method_and_section_hash(self):
+        data = bytearray(make_firm())
+        struct.pack_into("<I", data, 0x4C, 2)
+        data[0x50:0x70] = bytes(range(32))
+        result = firm_inspect.inspect_firm(bytes(data))
+        self.assertEqual(result["sections"][0]["copy_method"], 2)
+        self.assertEqual(result["sections"][0]["section_sha256"], bytes(range(32)).hex())
 
     def test_rejects_wrong_magic(self):
         with self.assertRaisesRegex(ValueError, "magic"):
