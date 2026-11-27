@@ -56,3 +56,29 @@ before it starts.
 **Not bootable.** The repository currently contains portable core code,
 libctru homebrew targets, and an SD folder-layout package. It does not yet
 contain an ARM9 boot-stage implementation or a valid Xavrx FIRM artifact.
+
+## Next active milestone: boot contract evidence
+
+The next engineering task is to replace assumptions with a source-backed boot
+contract before writing an ARM9 entry point. Record, with exact upstream source
+locations and version/commit pins:
+
+- the FIRM header and section descriptor rules accepted by the installed
+  boot9strap version;
+- the ARM9 entry-point calling convention and initial processor state;
+- section load addresses, alignment, bounds, and memory ownership;
+- the supported New 2DS XL hardware/revision scope;
+- the documented recovery procedure for an invalid SD-card payload.
+
+A host-side FIRM parser passing tests is necessary but is not proof that a
+payload will execute. The project must not synthesize a boot.firm until the
+contract is verified and a dedicated ARM9 target can produce a meaningful,
+reviewable payload. CI must keep the homebrew .3dsx and any future FIRM target
+as separate artifacts.
+
+## Latest verified CI checkpoint
+
+Workflow run 46062015166 completed successfully: core-tests and
+build-3ds-homebrew both passed. This verifies the portable tests and the
+existing 3DS homebrew/package build only. It does not build, validate, or test a
+bootable Xavrx boot.firm.
