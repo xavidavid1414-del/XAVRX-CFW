@@ -34,6 +34,20 @@ NAND.
 - Error states: invalid entry contract, invalid memory map, unsupported
   hardware revision, and initialization failure.
 
+## Host-side validation foundation
+
+The portable core now exposes three pure helpers:
+
+- `xavrx_memory_range_valid`: rejects empty ranges and 32-bit end overflow.
+- `xavrx_memory_range_contains`: checks full containment.
+- `xavrx_memory_ranges_overlap`: detects overlap while treating adjacent
+  ranges as non-overlapping.
+
+These helpers use generic 32-bit ranges only. They do not define, assume, or
+approve any Nintendo 3DS physical memory addresses. Their edge cases are
+covered by host tests, including empty ranges, overflow, containment,
+overlap, and adjacency.
+
 ## Implementation gates
 
 - Pin the exact 3DS hardware and boot-chain assumptions with source references.
