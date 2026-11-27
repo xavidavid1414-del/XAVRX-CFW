@@ -21,6 +21,23 @@ typedef struct {
     uint32_t size;
 } XavrxMemoryRange;
 
+typedef enum {
+    XAVRX_MEMORY_AVAILABLE = 1,
+    XAVRX_MEMORY_RESERVED = 2,
+    XAVRX_MEMORY_DEVICE = 3
+} XavrxMemoryKind;
+
+#define XAVRX_MEMORY_READ  0x01u
+#define XAVRX_MEMORY_WRITE 0x02u
+#define XAVRX_MEMORY_EXEC  0x04u
+#define XAVRX_MEMORY_PERMISSION_MASK 0x07u
+
+typedef struct {
+    XavrxMemoryRange range;
+    XavrxMemoryKind kind;
+    uint32_t permissions;
+} XavrxMemoryRegion;
+
 /* Returns non-zero only for an allowed one-way startup transition. */
 int xavrx_core_transition(XavrxCoreState current, XavrxCoreState next);
 
@@ -30,7 +47,7 @@ int xavrx_memory_range_contains(XavrxMemoryRange outer, XavrxMemoryRange inner);
 int xavrx_memory_ranges_overlap(XavrxMemoryRange a, XavrxMemoryRange b);
 
 /* Validates a bounded list of non-empty, non-overlapping generic regions. */
-int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count);
+int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count);\n\n/* Validates generic region kinds and conservative permission combinations. */\nint xavrx_memory_region_valid(const XavrxMemoryRegion *region);\nint xavrx_memory_region_map_valid(const XavrxMemoryRegion *regions, uint32_t count);
 
 #ifdef __cplusplus
 }
