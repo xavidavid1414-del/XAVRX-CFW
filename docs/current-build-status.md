@@ -1,18 +1,17 @@
 # Xavrx current build status
 
-Latest verified workflow: [run 46063447754](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063447754)
+Latest verified workflow: [run 46064155966](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46064155966)
 
-Commit: `144dc1bc3849d7227dc8d0456e4866a33ea6df7a`
+Commit: `0419528707d39939d70eeb3b43d67ad87de84a8f`
 
 ## Verified jobs
 
-The latest three workflow runs completed successfully:
+Run 46064155966 completed successfully:
 
-- [Run 46063440855](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063440855): `core-tests` and `build-3ds-homebrew` passed.
-- [Run 46063444075](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063444075): `core-tests` and `build-3ds-homebrew` passed.
-- [Run 46063447754](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063447754): `core-tests` and `build-3ds-homebrew` passed.
+- `core-tests`: portable core tests and read-only FIRM inspector tests passed.
+- `build-3ds-homebrew`: diagnostic `.3dsx`, Xavrx Installer `.3dsx`, and SD-layout ZIP packaging completed successfully.
 
-The verified checks include portable C11 core tests, read-only FIRM inspector tests, the diagnostic `.3dsx` build, the Xavrx Installer `.3dsx` build, and the SD-layout ZIP packaging job.
+The inspector tests now cover entry-point-to-section matching and the exclusive end boundary. The report also identifies overlapping load ranges for review without claiming those ranges are safe or invalid.
 
 ## What these results mean
 
@@ -20,7 +19,7 @@ The current portable code, homebrew applications, and SD folder-layout archive b
 
 ## Artifacts
 
-Open [the latest workflow run](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063447754) and download:
+Open [the latest workflow run](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46064155966) and download:
 - `xavrx-diagnostic-3dsx`
 - `xavrx-installer-3dsx`
 - `xavrx-sd-layout`
