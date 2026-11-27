@@ -29,11 +29,11 @@ def inspect_firm(data: bytes) -> dict:
     for index in range(SECTION_COUNT):
         off = SECTION_TABLE_OFFSET + index * SECTION_ENTRY_SIZE
         file_offset, load_address, size = struct.unpack_from("<III", data, off)
-        section_type = struct.unpack_from("<I", data, off + 0x0C)[0]
+        copy_method = struct.unpack_from("<I", data, off + 0x0C)[0]
         if size == 0:
             sections.append({
                 "index": index, "present": False, "file_offset": file_offset,
-                "load_address": load_address, "size": size, "type": section_type
+                "load_address": load_address, "size": size, "copy_method": copy_method
             })
             continue
         end = file_offset + size
@@ -47,7 +47,7 @@ def inspect_firm(data: bytes) -> dict:
         ranges.append((file_offset, end, index))
         sections.append({
             "index": index, "present": True, "file_offset": file_offset,
-            "load_address": load_address, "size": size, "type": section_type
+            "load_address": load_address, "size": size, "copy_method": copy_method
         })
 
     if not any(section["present"] for section in sections):
