@@ -6,6 +6,7 @@ It reports basic header and section-boundary information only.
 """
 from __future__ import annotations
 import argparse
+import hashlib
 import json
 import struct
 from pathlib import Path
@@ -33,7 +34,8 @@ def inspect_firm(data: bytes) -> dict:
         if size == 0:
             sections.append({
                 "index": index, "present": False, "file_offset": file_offset,
-                "load_address": load_address, "size": size, "copy_method": copy_method
+                "load_address": load_address, "size": size, "copy_method": copy_method,
+                "section_sha256": None
             })
             continue
         end = file_offset + size
@@ -47,7 +49,8 @@ def inspect_firm(data: bytes) -> dict:
         ranges.append((file_offset, end, index))
         sections.append({
             "index": index, "present": True, "file_offset": file_offset,
-            "load_address": load_address, "size": size, "copy_method": copy_method
+            "load_address": load_address, "size": size, "copy_method": copy_method,
+            "section_sha256": data[off + 0x10:off + 0x30].hex()
         })
 
     if not any(section["present"] for section in sections):
@@ -56,6 +59,7 @@ def inspect_firm(data: bytes) -> dict:
     return {
         "format": "FIRM",
         "file_size": len(data),
+        "file_sha256": hashlib.sha256(data).hexdigest(),
         "arm11_entry": f"0x{arm11_entry:08X}",
         "arm9_entry": f"0x{arm9_entry:08X}",
         "sections": sections,
