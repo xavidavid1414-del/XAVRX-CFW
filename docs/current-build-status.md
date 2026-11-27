@@ -1,14 +1,14 @@
 # Xavrx current build status
 
-Last verified workflow: [run 46062710228](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46062710228)
+Last verified workflow: [run 46062960686](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46062960686)
 
-Commit: `9d17965ae65acbbc688de904cebe0b5dfa11a2f1`
+Commit: `f5ab6a372a79a758123c3de69826fbf3a1e962ee`
 
 ## Verified jobs
 
 - `core-tests`: passed.
   - Portable core compiled with C11, `-Wall -Wextra -Werror`.
-  - Read-only FIRM container unit tests passed.
+  - Read-only FIRM container unit tests passed, including descriptor metadata and stored-hash reporting.
 - `build-3ds-homebrew`: passed.
   - devkitARM toolchain check passed.
   - Diagnostic `.3dsx` build passed.
