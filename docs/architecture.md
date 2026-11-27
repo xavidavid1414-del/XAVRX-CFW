@@ -1,38 +1,44 @@
-# XAVRX CFW — Initial Architecture
+# XAVRX CFW — Architecture
 
-## Version 0.1 scope
+## Current scope
 
-Version 0.1 establishes a safe, testable project structure. It does not install to NAND, replace boot9strap, or claim to boot as a complete CFW.
+The repository contains a user-mode diagnostic application and portable core components. It is not bootable custom firmware and does not replace the existing boot chain.
+
+## Core modules
+
+| Module | Responsibility | Current boundary |
+|---|---|---|
+| core | Startup state transitions | Explicit, one-way transitions |
+| config | Small key/value configuration parser | Bounded input; known keys only |
+| log | Fixed-size in-memory log ring | No filesystem writes |
+| app | 3DS diagnostic screen | Runs as ordinary homebrew |
+| tests | Host-side checks | No console or NAND access |
 
 ## Startup model
 
-1. An existing trusted boot chain launches an XAVRX development build.
-2. XAVRX validates its own build metadata and runtime environment.
-3. The core initializes only services that have been implemented and tested.
-4. Optional modules are started independently.
-5. If initialization fails, XAVRX exits or returns control through the documented launch path.
+1. Start in COLD.
+2. Enter VALIDATING.
+3. Enter READY only after validation succeeds, or FAILED if validation fails.
+4. Do not perform privileged operations or boot-chain modifications.
 
-## Component boundaries
+## Configuration
 
-| Component | Responsibility | Initial safety boundary |
-|---|---|---|
-| boot | Entry point and handoff | No boot-chain writes |
-| core | Runtime, logging, configuration | No direct hardware writes without reviewed APIs |
-| modules | Optional features | Disabled unless implemented |
-| sd | Storage discovery | Read-only first |
-| wifi | Network abstraction | No credentials stored in source |
-| recovery | Diagnostics and fallback | Never overwrites NAND |
+The parser currently recognizes wifi_enabled=0|1 and log_level=0|1|2. Defaults are Wi-Fi disabled and log level 1. Unknown keys are ignored. Invalid values for recognized keys reject the configuration. The parser operates on a caller-supplied byte range and does not allocate memory.
 
-## Storage budget
+## Logging
 
-The 10 MB target applies to XAVRX-owned files on the microSD card, not Nintendo system files, boot9strap, or required external dependencies. Actual size will be measured from release artifacts; it is not yet verified.
+The logger stores up to eight fixed-size messages in RAM. It does not write to SD or NAND. This keeps the first logging implementation bounded and easy to test.
 
-## Milestones
+## Storage goal
 
-- [x] Create repository and define scope
-- [x] Establish architecture and safety boundaries
-- [ ] Add toolchain detection and reproducible build
-- [ ] Add minimal entry point
-- [ ] Add host-side unit tests
-- [ ] Produce first development artifact
-- [ ] Verify launch on hardware without changing NAND
+The goal remains under 10 MB for XAVRX-owned microSD files, where technically feasible. No size claim is made until a real release artifact is built and measured.
+
+## Next milestones
+
+- [x] Portable startup state machine
+- [x] Bounded configuration parser
+- [x] Fixed-size in-memory logger
+- [x] Host-side unit tests added to CI
+- [ ] Confirm CI test and 3DS build results
+- [ ] Add read-only SD detection behind a separately reviewed interface
+- [ ] Hardware launch test without changing boot-critical files
