@@ -25,30 +25,24 @@ jobs:
     container:
       image: devkitpro/devkitarm
       options: --user 1001
+    env:
+      DEVKITPRO: /opt/devkitpro
+      DEVKITARM: /opt/devkitpro/devkitARM
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install devkitPro and 3DS toolchain
+      - name: Verify preinstalled 3DS toolchain
         shell: bash
         run: |
-          curl -fL -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36" https://apt.devkitpro.org/install-devkitpro-pacman -o /tmp/install-devkitpro-pacman
-          test "$(wc -c < /tmp/install-devkitpro-pacman)" -gt 500
-          chmod +x /tmp/install-devkitpro-pacman
-          sudo /tmp/install-devkitpro-pacman
-          sudo /opt/devkitpro/pacman/bin/pacman -Syu --noconfirm
-          sudo /opt/devkitpro/pacman/bin/pacman -S --noconfirm 3ds-dev
+          test -x "$DEVKITARM/bin/arm-none-eabi-gcc"
+          test -f "$DEVKITPRO/3ds_rules"
+          "$DEVKITARM/bin/arm-none-eabi-gcc" --version
       - name: Build diagnostic application
         shell: bash
-        run: |
-          export DEVKITPRO=/opt/devkitpro
-          export DEVKITARM="$DEVKITPRO/devkitARM"
-          make
+        run: make
       - name: Build Xavrx Installer
         shell: bash
-        run: |
-          export DEVKITPRO=/opt/devkitpro
-          export DEVKITARM="$DEVKITPRO/devkitARM"
-          make -C apps/xavrx-installer
+        run: make -C apps/xavrx-installer
       - name: Create SD-card layout package
         shell: bash
         run: |
