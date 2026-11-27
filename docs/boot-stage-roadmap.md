@@ -78,10 +78,15 @@ as separate artifacts.
 
 ## Latest verified CI checkpoint
 
-Workflow run 46062015166 completed successfully: core-tests and
-build-3ds-homebrew both passed. This verifies the portable tests and the
-existing 3DS homebrew/package build only. It does not build, validate, or test a
-bootable Xavrx boot.firm.
+Workflow run 46062710228 completed successfully on commit
+`9d17965ae65acbbc688de904cebe0b5dfa11a2f1`: core-tests and
+build-3ds-homebrew both passed. The run built the diagnostic and installer
+`.3dsx` applications and produced the SD-layout ZIP. This verifies the
+portable tests and existing homebrew/package build only; it does not build,
+validate, or test a bootable Xavrx `boot.firm`.
+
+See [docs/current-build-status.md](current-build-status.md) for the exact
+artifacts and limitations.
 
 ## Boot contract research checkpoint
 
