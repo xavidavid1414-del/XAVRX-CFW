@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+#define XAVRX_MEMORY_MAP_MAX_REGIONS 16u
+
 typedef enum {
     XAVRX_STATE_COLD = 0,
     XAVRX_STATE_VALIDATING,
@@ -22,14 +24,13 @@ typedef struct {
 /* Returns non-zero only for an allowed one-way startup transition. */
 int xavrx_core_transition(XavrxCoreState current, XavrxCoreState next);
 
-/*
- * Pure range helpers for host-side validation.
- * A range is valid only when size is non-zero and end does not overflow
- * the 32-bit address space. No hardware memory map is implied.
- */
+/* Generic range helpers; these do not imply a physical hardware map. */
 int xavrx_memory_range_valid(XavrxMemoryRange range);
 int xavrx_memory_range_contains(XavrxMemoryRange outer, XavrxMemoryRange inner);
 int xavrx_memory_ranges_overlap(XavrxMemoryRange a, XavrxMemoryRange b);
+
+/* Validates a bounded list of non-empty, non-overlapping generic regions. */
+int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count);
 
 #ifdef __cplusplus
 }
