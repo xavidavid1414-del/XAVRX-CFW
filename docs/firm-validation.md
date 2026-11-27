@@ -45,3 +45,17 @@ plus the section size does not wrap beyond the 32-bit address space. It reports
 the exclusive end of the range for review. This is only arithmetic validation:
 it does not approve any physical memory region, determine hardware ownership,
 or establish that the section is safe to load.
+
+
+## Entry-point and load-range reporting
+
+The JSON report lists any section load-address overlaps in
+`load_range_overlaps`. These are reported for human review and are not
+automatically declared invalid because the inspector does not have a
+hardware-specific memory ownership map.
+
+The `entry_point_section_matches` object lists section indexes whose
+half-open load ranges contain the ARM11 or ARM9 entry address. An empty list
+means that the entry address did not fall inside any section range in this
+container. A match is only a structural observation; it does not prove that
+the entry code, processor state, permissions, or boot contract are correct.
