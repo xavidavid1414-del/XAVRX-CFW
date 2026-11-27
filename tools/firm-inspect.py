@@ -39,6 +39,9 @@ def inspect_firm(data: bytes) -> dict:
             })
             continue
         end = file_offset + size
+        load_end = load_address + size
+        if load_end > 0x100000000:
+            raise ValueError(f"section {index}: load address range overflows 32-bit address space")
         if file_offset < HEADER_SIZE:
             raise ValueError(f"section {index}: data overlaps FIRM header")
         if end < file_offset or end > len(data):
@@ -51,7 +54,8 @@ def inspect_firm(data: bytes) -> dict:
         calculated_hash = hashlib.sha256(data[file_offset:end]).digest()
         sections.append({
             "index": index, "present": True, "file_offset": file_offset,
-            "load_address": load_address, "size": size, "copy_method": copy_method,
+            "load_address": load_address, "load_end_exclusive": f"0x{load_end:08X}" if load_end < 0x100000000 else "0x100000000",
+            "size": size, "copy_method": copy_method,
             "section_sha256": stored_hash.hex(),
             "section_sha256_valid": stored_hash == calculated_hash
         })
