@@ -44,6 +44,17 @@ jobs:
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM="$DEVKITPRO/devkitARM"
           make -C apps/xavrx-installer
+      - name: Create SD-card layout package
+        shell: bash
+        run: |
+          bash scripts/package-sd.sh
+          test -s build/xavrx-sd-layout.zip
+      - name: Upload SD-card layout package
+        uses: actions/upload-artifact@v4
+        with:
+          name: xavrx-sd-layout
+          path: build/xavrx-sd-layout.zip
+          if-no-files-found: error
       - name: Report artifact sizes
         shell: bash
         run: |
