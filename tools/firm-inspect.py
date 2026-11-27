@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Read-only structural inspector for Nintendo 3DS FIRM containers.
+
+This tool does not create, patch, sign, install, or execute firmware.
+It reports basic header and section-boundary information only.
+"""
+from __future__ import annotations
+import argparse
+import json
+import struct
+from pathlib import Path
+
+HEADER_SIZE = 0x200
+SECTION_COUNT = 4
+SECTION_ENTRY_SIZE = 0x30
+SECTION_TABLE_OFFSET = 0x40
+MAGIC = b"FIRM"
+
+
+def inspect_firm(data: bytes) -> dict:
+    if len(data) < HEADER_SIZE:
+        raise ValueError(f"file too small: {len(data)} bytes (need at least {HEADER_SIZE})")
+    if data[:4] != MAGIC:
+        raise ValueError("missing FIRM magic")
+
+    arm11_entry, arm9_entry = struct.unpack_from("<II", data, 0x08)
+    sections = []
+    ranges = []
+    for index in range(SECTION_COUNT):
+        off = SECTION_TABLE_OFFSET + index * SECTION_ENTRY_SIZE
+        file_offset, load_address, size = struct.unpack_from("<III", data, off)
+        section_type = struct.unpack_from("<I", data, off + 0x0C)[0]
+        if size == 0:
+            sections.append({
+                "index": index, "present": False, "file_offset": file_offset,
+                "load_address": load_address, "size": size, "type": section_type
+            })
+            continue
+        end = file_offset + size
+        if file_offset < HEADER_SIZE:
+            raise ValueError(f"section {index}: data overlaps FIRM header")
+        if end < file_offset or end > len(data):
+            raise ValueError(f"section {index}: data range exceeds file")
+        for other_start, other_end, other_index in ranges:
+            if file_offset < other_end and other_start < end:
+                raise ValueError(f"sections {other_index} and {index} overlap")
+        ranges.append((file_offset, end, index))
+        sections.append({
+            "index": index, "present": True, "file_offset": file_offset,
+            "load_address": load_address, "size": size, "type": section_type
+        })
+
+    if not any(section["present"] for section in sections):
+        raise ValueError("FIRM contains no non-empty sections")
+
+    return {
+        "format": "FIRM",
+        "file_size": len(data),
+        "arm11_entry": f"0x{arm11_entry:08X}",
+        "arm9_entry": f"0x{arm9_entry:08X}",
+        "sections": sections,
+        "validation": "basic container bounds only; not proof of bootability"
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("firm", type=Path)
+    args = parser.parse_args()
+    try:
+        report = inspect_firm(args.firm.read_bytes())
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
+    print(json.dumps(report, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
