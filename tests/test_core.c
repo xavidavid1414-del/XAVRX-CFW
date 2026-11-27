@@ -47,6 +47,18 @@ int main(void)
     assert(!xavrx_memory_map_valid(valid_map, 0));
     assert(!xavrx_memory_map_valid(0, 1));
     assert(!xavrx_memory_map_valid(valid_map, XAVRX_MEMORY_MAP_MAX_REGIONS + 1u));
+    assert(xavrx_memory_region_valid(&typed_valid[0]));
+    assert(xavrx_memory_region_valid(&typed_valid[1]));
+    assert(xavrx_memory_region_valid(&typed_valid[2]));
+    assert(!xavrx_memory_region_valid(0));
+    assert(!xavrx_memory_region_valid(&typed_reserved_write));
+    assert(!xavrx_memory_region_valid(&typed_device_exec));
+    assert(!xavrx_memory_region_valid(&typed_unknown_kind));
+    assert(!xavrx_memory_region_valid(&typed_unknown_permission));
+    assert(xavrx_memory_region_map_valid(typed_valid, 3));
+    assert(!xavrx_memory_region_map_valid(typed_overlap, 2));
+    assert(!xavrx_memory_region_map_valid(0, 1));
+    assert(!xavrx_memory_region_map_valid(typed_valid, 0));
 
     xavrx_config_defaults(&cfg);
     assert(cfg.wifi_enabled == 0 && cfg.log_level == 1);
