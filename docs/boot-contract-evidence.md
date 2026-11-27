@@ -12,6 +12,28 @@ hardware memory map, or bootable FIRM image.
 | FIRM descriptor metadata | [3dbrew FIRM format](https://3dbrew.org/wiki/FIRM) describes descriptor offset `+0x0C` as a copy method; Luma3DS's `FirmSection` struct calls the same field `procType`, though its loader validation does not consume it. | Xavrx reports this field without enforcing its value; the naming discrepancy is documented rather than guessed away. |
 | Boot-chain versioning | [boot9strap releases](https://github.com/SciresM/boot9strap/releases) document behavior changes across versions. | Any compatibility claim must name the boot9strap version being targeted. |
 
+## Luma loader observations (not a Xavrx specification)
+
+The currently inspected Luma3DS `arm9/source/firm.c` implementation performs
+additional checks in `checkFirm` beyond basic file bounds:
+
+- requires the ARM9 entry point to be nonzero; an ARM11 entry point of zero is
+  accepted as a no-ARM11-side case;
+- requires non-empty section file offsets and sizes to be 0x200-byte aligned,
+  and load addresses to be 4-byte aligned;
+- rejects 32-bit load-range overflow and section destinations outside the
+  loader's enumerated memory ranges;
+- rejects destination ranges that overlap the in-memory FIRM buffer;
+- verifies each section's SHA-256 digest;
+- requires the ARM9 entry point, and any nonzero ARM11 entry point, to fall
+  inside a loaded section.
+
+These are observations about this Luma source revision only. Its hard-coded
+destination ranges, buffer address, and alignment policy must **not** be copied
+into Xavrx as universal rules. The source branch URL is mutable; a later
+implementation must pin a reviewed commit and compare it with the exact
+boot9strap version and New 2DS XL hardware assumptions.
+
 ## Not yet established
 
 The references above do **not** establish a complete, safe contract for a new
