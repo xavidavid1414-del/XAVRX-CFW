@@ -79,3 +79,49 @@ int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count)
 
     return 1;
 }
+
+int xavrx_memory_region_valid(const XavrxMemoryRegion *region)
+{
+    if (region == 0 || !xavrx_memory_range_valid(region->range)) {
+        return 0;
+    }
+
+    if ((region->permissions & ~XAVRX_MEMORY_PERMISSION_MASK) != 0) {
+        return 0;
+    }
+
+    switch (region->kind) {
+    case XAVRX_MEMORY_AVAILABLE:
+        return 1;
+    case XAVRX_MEMORY_RESERVED:
+        return (region->permissions & (XAVRX_MEMORY_WRITE | XAVRX_MEMORY_EXEC)) == 0;
+    case XAVRX_MEMORY_DEVICE:
+        return (region->permissions & XAVRX_MEMORY_EXEC) == 0;
+    default:
+        return 0;
+    }
+}
+
+int xavrx_memory_region_map_valid(const XavrxMemoryRegion *regions, uint32_t count)
+{
+    uint32_t i;
+    uint32_t j;
+
+    if (regions == 0 || count == 0 || count > XAVRX_MEMORY_MAP_MAX_REGIONS) {
+        return 0;
+    }
+
+    for (i = 0; i < count; ++i) {
+        if (!xavrx_memory_region_valid(&regions[i])) {
+            return 0;
+        }
+
+        for (j = 0; j < i; ++j) {
+            if (xavrx_memory_ranges_overlap(regions[i].range, regions[j].range)) {
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
