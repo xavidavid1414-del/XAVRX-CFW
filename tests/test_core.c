@@ -16,6 +16,15 @@ int main(void)
     const XavrxMemoryRange overlapping = {0x1ff0u, 0x0020u};
     const XavrxMemoryRange zero_size = {0x1000u, 0u};
     const XavrxMemoryRange overflow = {0xfffffff0u, 0x20u};
+    const XavrxMemoryRange valid_map[] = {
+        {0x1000u, 0x0100u}, {0x2000u, 0x0200u}, {0x3000u, 0x0100u}
+    };
+    const XavrxMemoryRange overlapping_map[] = {
+        {0x1000u, 0x0200u}, {0x1100u, 0x0100u}
+    };
+    const XavrxMemoryRange invalid_map[] = {
+        {0x1000u, 0u}
+    };
 
     assert(xavrx_core_transition(XAVRX_STATE_COLD, XAVRX_STATE_VALIDATING));
     assert(xavrx_core_transition(XAVRX_STATE_VALIDATING, XAVRX_STATE_READY));
@@ -32,6 +41,12 @@ int main(void)
     assert(xavrx_memory_ranges_overlap(memory, overlapping));
     assert(!xavrx_memory_ranges_overlap(memory, adjacent));
     assert(!xavrx_memory_ranges_overlap(memory, overflow));
+    assert(xavrx_memory_map_valid(valid_map, 3));
+    assert(!xavrx_memory_map_valid(overlapping_map, 2));
+    assert(!xavrx_memory_map_valid(invalid_map, 1));
+    assert(!xavrx_memory_map_valid(valid_map, 0));
+    assert(!xavrx_memory_map_valid(0, 1));
+    assert(!xavrx_memory_map_valid(valid_map, XAVRX_MEMORY_MAP_MAX_REGIONS + 1u));
 
     xavrx_config_defaults(&cfg);
     assert(cfg.wifi_enabled == 0 && cfg.log_level == 1);
