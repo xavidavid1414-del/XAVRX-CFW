@@ -73,12 +73,22 @@ def inspect_firm(data: bytes) -> dict:
     if not any(section["present"] for section in sections):
         raise ValueError("FIRM contains no non-empty sections")
 
+    def matching_sections(entry_point: int) -> list[int]:
+        return [
+            index for start, end, index in load_ranges
+            if start <= entry_point < end
+        ]
+
     return {
         "format": "FIRM",
         "file_size": len(data),
         "file_sha256": hashlib.sha256(data).hexdigest(),
         "arm11_entry": f"0x{arm11_entry:08X}",
         "arm9_entry": f"0x{arm9_entry:08X}",
+        "entry_point_section_matches": {
+            "arm11": matching_sections(arm11_entry),
+            "arm9": matching_sections(arm9_entry)
+        },
         "sections": sections,
         "load_range_overlaps": load_range_overlaps,
         "validation": "basic container bounds only; not proof of bootability"
