@@ -57,9 +57,10 @@ class FirmInspectTests(unittest.TestCase):
             firm_inspect.inspect_firm(bytes(data))
 
     def test_reports_overlapping_load_ranges_without_claiming_validity(self):
-        data = bytearray(make_firm())
-        struct.pack_into("<III", data, 0x70, 0x210, 0x1FF80020, 0x20)
-        data[0x80:0xA0] = hashlib.sha256(data[0x210:0x230]).digest()
+        data = bytearray(make_firm()) + bytearray(0x20)
+        struct.pack_into("<III", data, 0x70, 0x240, 0x1FF80020, 0x20)
+        data[0x240:0x260] = bytes(range(0x20))
+        data[0x80:0xA0] = hashlib.sha256(data[0x240:0x260]).digest()
         result = firm_inspect.inspect_firm(bytes(data))
         self.assertEqual(result["load_range_overlaps"], [{
             "section_a": 0, "section_b": 1,
