@@ -17,6 +17,8 @@ jobs:
         run: |
           cc -std=c11 -Wall -Wextra -Werror -Iinclude source/core.c source/config.c source/log.c tests/test_core.c -o /tmp/xavrx-core-tests
           /tmp/xavrx-core-tests
+      - name: Run read-only FIRM container tests
+        run: python3 -m unittest discover -s tests -p 'test_firm_inspect.py' -v
 
   build-3ds-homebrew:
     runs-on: ubuntu-latest
