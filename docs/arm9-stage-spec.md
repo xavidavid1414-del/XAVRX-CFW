@@ -48,6 +48,17 @@ approve any Nintendo 3DS physical memory addresses. Their edge cases are
 covered by host tests, including empty ranges, overflow, containment,
 overlap, and adjacency.
 
+
+## Generic memory map validation
+
+The portable core also validates a caller-supplied list of up to 16 generic
+memory regions. It rejects null lists, empty lists, excessive region counts,
+empty or overflowing ranges, and any pair of overlapping regions. Adjacent
+regions are allowed. This is a host-testable structural check only: it does
+not establish which physical addresses are safe or available on 3DS hardware.
+A hardware-specific map must be sourced and reviewed before any boot-stage
+code can consume it.
+
 ## Implementation gates
 
 - Pin the exact 3DS hardware and boot-chain assumptions with source references.
