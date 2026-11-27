@@ -44,3 +44,31 @@ Identify the exact boot9strap version present on the target setup from reliable
 user-provided system information, then review the matching tagged upstream
 source and record the remaining entry-state requirements. Until then, the
 ARM9 entry ABI stays explicitly unspecified.
+
+
+## FIRM entry-point and section facts
+
+The [3dbrew FIRM format reference](https://3dbrew.org/wiki/FIRM) documents
+ARM11 and ARM9 entry-point fields at header offsets `0x08` and `0x0C`.
+Each of the four section descriptors contains a file offset, a physical load
+address, a byte size, a copy-method field, and a SHA-256 digest. The section
+size determines whether a descriptor is present. The reference describes
+copy-method values for NDMA, XDMA, and CPU copy, and notes that Process9
+ignores this field.
+
+This supports the inspector's structural reporting of entry-point/section
+matches, section file bounds, load-range arithmetic, and stored section
+digests. It does **not** establish that a match is sufficient for execution,
+that overlapping load ranges are acceptable, or that any reported physical
+address is safe for Xavrx to use.
+
+The [3DS memory-layout reference](https://3dbrew.org/wiki/Memory_layout)
+shows distinct ARM9 regions and differences between Old 3DS and New 3DS
+hardware. Xavrx therefore must not treat a generic 32-bit address-range check
+as a hardware memory map. A target-specific map and ownership rules remain
+unapproved until verified against the exact New 2DS XL and boot environment.
+
+The [boot9strap project](https://github.com/SciresM/boot9strap) is the
+upstream source to pin for the installed loader version. The exact version
+installed on the target console is still unknown, so no version-specific
+entry-state or hand-off claim is made here.
