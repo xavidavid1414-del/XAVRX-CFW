@@ -36,14 +36,27 @@ jobs:
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM="$DEVKITPRO/devkitARM"
           make
-      - name: Report artifact size
+      - name: Build Xavrx Installer
+        shell: bash
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM="$DEVKITPRO/devkitARM"
+          make -C apps/xavrx-installer
+      - name: Report artifact sizes
         shell: bash
         run: |
           test -s xavrx-diagnostic.3dsx
-          stat -c '%n %s bytes' xavrx-diagnostic.3dsx
-      - name: Upload development artifact
+          test -s apps/xavrx-installer/xavrx-installer.3dsx
+          stat -c '%n %s bytes' xavrx-diagnostic.3dsx apps/xavrx-installer/xavrx-installer.3dsx
+      - name: Upload diagnostic artifact
         uses: actions/upload-artifact@v4
         with:
           name: xavrx-diagnostic-3dsx
           path: xavrx-diagnostic.3dsx
+          if-no-files-found: error
+      - name: Upload Xavrx Installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xavrx-installer-3dsx
+          path: apps/xavrx-installer/xavrx-installer.3dsx
           if-no-files-found: error
