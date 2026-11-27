@@ -47,7 +47,11 @@ int xavrx_memory_range_contains(XavrxMemoryRange outer, XavrxMemoryRange inner);
 int xavrx_memory_ranges_overlap(XavrxMemoryRange a, XavrxMemoryRange b);
 
 /* Validates a bounded list of non-empty, non-overlapping generic regions. */
-int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count);\n\n/* Validates generic region kinds and conservative permission combinations. */\nint xavrx_memory_region_valid(const XavrxMemoryRegion *region);\nint xavrx_memory_region_map_valid(const XavrxMemoryRegion *regions, uint32_t count);
+int xavrx_memory_map_valid(const XavrxMemoryRange *regions, uint32_t count);
+
+/* Validates generic region kinds and conservative permission combinations. */
+int xavrx_memory_region_valid(const XavrxMemoryRegion *region);
+int xavrx_memory_region_map_valid(const XavrxMemoryRegion *regions, uint32_t count);
 
 #ifdef __cplusplus
 }
