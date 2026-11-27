@@ -29,13 +29,14 @@ XAVRX is intended to become an independent CFW environment rather than a theme o
 
 - `include/xavrx/` — public core interfaces
 - `source/` — 3DS application and portable core implementation
+- `apps/xavrx-installer/` — standalone Xavrx Installer homebrew app
 - `tests/` — host-side unit tests
 - `docs/` — architecture, build process, and safety notes
 - `.github/workflows/` — automated build and test workflow
 
 ## Build artifact
 
-The current 3DS target is `xavrx-diagnostic.3dsx`. No CIA or installable CFW package is produced.
+The repository builds `xavrx-diagnostic.3dsx` and a separate `apps/xavrx-installer/xavrx-installer.3dsx`. The installer is currently a read-only SD title browser; CIA installation and title deletion are not implemented. No CIA or installable CFW package is produced.
 
 See [docs/build.md](docs/build.md) for build details and [docs/architecture.md](docs/architecture.md) for the development model.
 
