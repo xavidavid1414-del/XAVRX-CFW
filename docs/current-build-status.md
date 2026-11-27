@@ -1,19 +1,18 @@
 # Xavrx current build status
 
-Last verified workflow: [run 46062960686](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46062960686)
+Latest verified workflow: [run 46063447754](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063447754)
 
-Commit: `f5ab6a372a79a758123c3de69826fbf3a1e962ee`
+Commit: `144dc1bc3849d7227dc8d0456e4866a33ea6df7a`
 
 ## Verified jobs
 
-- `core-tests`: passed.
-  - Portable core compiled with C11, `-Wall -Wextra -Werror`.
-  - Read-only FIRM container unit tests passed, including descriptor metadata and stored-hash reporting.
-- `build-3ds-homebrew`: passed.
-  - devkitARM toolchain check passed.
-  - Diagnostic `.3dsx` build passed.
-  - Xavrx Installer `.3dsx` build passed.
-  - SD-card layout ZIP was created and uploaded.
+The latest three workflow runs completed successfully:
+
+- [Run 46063440855](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063440855): `core-tests` and `build-3ds-homebrew` passed.
+- [Run 46063444075](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063444075): `core-tests` and `build-3ds-homebrew` passed.
+- [Run 46063447754](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063447754): `core-tests` and `build-3ds-homebrew` passed.
+
+The verified checks include portable C11 core tests, read-only FIRM inspector tests, the diagnostic `.3dsx` build, the Xavrx Installer `.3dsx` build, and the SD-layout ZIP packaging job.
 
 ## What these results mean
 
@@ -21,7 +20,7 @@ The current portable code, homebrew applications, and SD folder-layout archive b
 
 ## Artifacts
 
-Open the workflow run above and download:
+Open [the latest workflow run](https://github.com/xavidavid1414-del/XAVRX-CFW/actions/runs/46063447754) and download:
 - `xavrx-diagnostic-3dsx`
 - `xavrx-installer-3dsx`
 - `xavrx-sd-layout`
