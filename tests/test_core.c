@@ -22,6 +22,31 @@ int main(void)
     const XavrxMemoryRange overlapping_map[] = {
         {0x1000u, 0x0200u}, {0x1100u, 0x0100u}
     };
+    const XavrxMemoryRegion typed_valid[] = {
+        {{0x4000u, 0x0100u}, XAVRX_MEMORY_AVAILABLE,
+         XAVRX_MEMORY_READ | XAVRX_MEMORY_WRITE},
+        {{0x5000u, 0x0100u}, XAVRX_MEMORY_RESERVED, XAVRX_MEMORY_READ},
+        {{0x6000u, 0x0100u}, XAVRX_MEMORY_DEVICE,
+         XAVRX_MEMORY_READ | XAVRX_MEMORY_WRITE}
+    };
+    const XavrxMemoryRegion typed_reserved_write = {
+        {0x7000u, 0x0100u}, XAVRX_MEMORY_RESERVED,
+        XAVRX_MEMORY_READ | XAVRX_MEMORY_WRITE
+    };
+    const XavrxMemoryRegion typed_device_exec = {
+        {0x8000u, 0x0100u}, XAVRX_MEMORY_DEVICE,
+        XAVRX_MEMORY_READ | XAVRX_MEMORY_EXEC
+    };
+    const XavrxMemoryRegion typed_unknown_kind = {
+        {0x9000u, 0x0100u}, (XavrxMemoryKind)99, XAVRX_MEMORY_READ
+    };
+    const XavrxMemoryRegion typed_unknown_permission = {
+        {0xa000u, 0x0100u}, XAVRX_MEMORY_AVAILABLE, 0x80u
+    };
+    const XavrxMemoryRegion typed_overlap[] = {
+        {{0xb000u, 0x0200u}, XAVRX_MEMORY_AVAILABLE, XAVRX_MEMORY_READ},
+        {{0xb100u, 0x0100u}, XAVRX_MEMORY_DEVICE, XAVRX_MEMORY_READ}
+    };
     const XavrxMemoryRange invalid_map[] = {
         {0x1000u, 0u}
     };
