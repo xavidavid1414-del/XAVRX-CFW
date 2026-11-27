@@ -46,6 +46,16 @@ class FirmInspectTests(unittest.TestCase):
         result = firm_inspect.inspect_firm(bytes(data))
         self.assertFalse(result["sections"][0]["section_sha256_valid"])
 
+    def test_reports_exclusive_load_end(self):
+        result = firm_inspect.inspect_firm(make_firm())
+        self.assertEqual(result["sections"][0]["load_end_exclusive"], "0x1FF80040")
+
+    def test_rejects_load_address_overflow(self):
+        data = bytearray(make_firm())
+        struct.pack_into("<I", data, 0x44, 0xFFFFFFF0)
+        with self.assertRaisesRegex(ValueError, "load address range overflows"):
+            firm_inspect.inspect_firm(bytes(data))
+
     def test_rejects_wrong_magic(self):
         with self.assertRaisesRegex(ValueError, "magic"):
             firm_inspect.inspect_firm(b"NOPE" + bytes(0x300))
