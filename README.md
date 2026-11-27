@@ -1,44 +1,40 @@
 # XAVRX CFW
 
-A lightweight, independently developed custom-firmware project for the **New Nintendo 2DS XL**.
+A lightweight, independently developed custom-firmware project targeting the **New Nintendo 2DS XL**.
 
-## Target device
+## Current status
+
+**Development foundation — not bootable CFW yet.**
+
+The repository currently contains:
+- A libctru-based diagnostic homebrew application that builds as `xavrx-diagnostic.3dsx`.
+- A small portable core state machine with host-side unit tests.
+- A GitHub Actions workflow for the 3DS application build and core tests.
+- Architecture and build documentation.
+
+The diagnostic application runs as ordinary homebrew under the existing system software. It is not an ARM9 payload, bootloader, CIA installer, or replacement for Luma3DS.
+
+## Target and goals
 
 - Console: New Nintendo 2DS XL
 - Reference system version: 11.17.0-50U
-- Development target: ARM11 / Nintendo 3DS family
-- Storage goal: keep XAVRX-owned files under **10 MB**, where technically feasible
+- Development family: Nintendo 3DS / ARM11
+- Storage goal: under **10 MB** for XAVRX-owned microSD files, where technically feasible. This is a target, not a measured result.
 
-## Project status
+## Safety boundary
 
-**Version 0.1 — architecture and safe development foundation**
+XAVRX is intended to become an independent CFW environment rather than a theme or fork. Early development uses the established boot chain already present on the console to launch ordinary test applications. Do not remove Luma3DS, modify boot-critical files, or write to NAND while XAVRX is experimental. A future boot-chain implementation requires separate research, a tested recovery path, and real hardware validation.
 
-This repository starts with project documentation and a modular source layout. It is not yet bootable firmware.
+## Repository layout
 
-## Important boot-chain note
+- `include/xavrx/` — public core interfaces
+- `source/` — 3DS application and portable core implementation
+- `tests/` — host-side unit tests
+- `docs/` — architecture, build process, and safety notes
+- `.github/workflows/` — automated build and test workflow
 
-XAVRX is intended to become an independent CFW environment, not a Luma3DS theme or fork. The project will initially rely on an already-installed, established boot chain such as boot9strap to launch development builds. Replacing the boot chain itself is a separate, high-risk task and will not be attempted until recovery and compatibility are proven.
+## Build artifact
 
-Do not remove Luma3DS or alter boot-critical files while XAVRX is experimental. No NAND writing or installation is part of Version 0.1.
+The current 3DS target is `xavrx-diagnostic.3dsx`. No CIA or installable CFW package is produced.
 
-## Planned modules
-
-- **boot/** — entry point and startup handoff
-- **core/** — minimal runtime and system services
-- **modules/** — independently loadable components
-- **sd/** — read-only-first microSD access and storage checks
-- **wifi/** — network service interface
-- **recovery/** — diagnostics and safe fallback behavior
-- **tests/** — host-side checks for portable code
-
-## Development principles
-
-1. Prefer small, auditable components.
-2. Keep hardware access behind explicit interfaces.
-3. Test portable logic on a host before using console hardware.
-4. Never claim console compatibility without a real test.
-5. Preserve a known-good recovery path throughout development.
-
-## Build status
-
-No firmware binary is produced yet. Build tooling and the first tested executable will be added in a later step.
+See [docs/build.md](docs/build.md) for build details and [docs/architecture.md](docs/architecture.md) for the development model.
