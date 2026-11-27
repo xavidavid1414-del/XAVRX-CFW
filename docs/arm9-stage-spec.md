@@ -81,3 +81,14 @@ It does not change the existing SD-card package's active boot.firm.
 The repository still has no Xavrx ARM9 entry-point implementation and no valid
 Xavrx bootable FIRM artifact. The existing diagnostic .3dsx is ordinary
 homebrew and remains separate from this design.
+
+
+## Typed generic memory regions
+
+A second host-side layer describes each generic range with a region kind
+(`AVAILABLE`, `RESERVED`, or `DEVICE`) and explicit READ/WRITE/EXEC
+permissions. Validation rejects unknown kinds or permission bits, writable or
+executable RESERVED regions, executable DEVICE regions, invalid ranges, and
+overlapping typed regions. These are conservative software invariants for
+Xavrx's internal model, not claims about 3DS hardware permissions or physical
+memory layout. No addresses are assigned by this API.
